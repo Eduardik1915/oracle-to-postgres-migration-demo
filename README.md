@@ -59,3 +59,43 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
  - **Oracle**: `NUMBER`
  - **PostgreSQL**: `NUMERIC`
 
+---
+
+## Procedūru izmaiņas migrācijas laikā
+
+### 🔁 IN/OUT
+ - **Oracle**: `Norāda pēc parametra`
+ - **PostgreSQL**: `Norāda pirms parametra`
+
+---
+
+### 🎯 Kursora tips 
+ - **Oracle**: `SYS_REFCURSOR`
+ - **PostgreSQL**: `REFCURSOR`
+
+---
+
+ ### 🔍 SELECT INTO -> NOT EXISTS 
+ - **Oracle**: ```SELECT COUNT(*) INTO v_exists
+                FROM customers
+                WHERE customer_id = p_customer_id;
+
+                IF v_exists = 0 THEN
+                    RAISE_APPLICATION_ERROR(-20001, 'Customer not found');
+                END IF;```
+ - **PostgreSQL**: ```IF NOT EXISTS(
+		                  SELECT 1 FROM customers WHERE customer_id = p_customer_id
+	                  ) THEN
+		                  RAISE EXCEPTION 'Customer not found' USING ERRCODE = 'P0001';
+	                  END IF;```
+
+**Paskaidrojums:** PostgreSQL atbalsta NOT EXISTS/EXISTS izmantošanu tieši IF kontekstā, kas padara kodu īsāku un saprotamāku. Oracle šādu iespēju nav.
+
+---
+
+### ⚠️ Kļūdu izsaukums
+ - **Oracle**: `RAISE_APPLICATION_ERROR(-20001, 'Customer not found');`
+ - **PostgreSQL**: `RAISE EXCEPTION 'Customer not found' USING ERRCODE = 'P0001';`
+
+**Paskaidrojums:** Oracle kļūdu kodi (-20001 utt.) tiek aizstāti ar PostgreSQL lietotāja kļūdu kodiem (P0001–P9999).
+                   PostgreSQL gadījumā kļūdas kods jānorāda skaidri ar USING ERRCODE.

@@ -3,8 +3,17 @@
 ## Projekta apraksts
 
 Šis ir pet-projekts, kura mērķis ir demonstrēt datu bāzes migrāciju no Oracle uz PostgreSQL.  
-Projekts ietver trīs savstarpēji saistītas tabulas: `customers`, `products` un `orders`.  
+Projekts ietver:
+Trīs savstarpēji saistītas tabulas: `customers`, `products` un `orders`.
+Divas procedūras: `get_customer_orders` un `update_product_price_dynamic`.  
 Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu bāzu pārvaldības sistēmām.
+
+---
+
+## 📁 Failsistēma
+- `oracle/` — sākotnējie Oracle SQL skripti
+- `postgresql/` — migrētie PostgreSQL skripti
+- `README.md` — šis fails
 
 ---
 
@@ -43,7 +52,7 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
  - **PostgreSQL**: `created_date TIMESTAMP DEFAULT LOCALTIMESTAMP`
 
 **Paskaidrojums:** Oracle tips `DATE` tiek aizvietots ar `TIMESTAMP`.
-                   Oracle tekošā laika operators `SYSDATE` tike aizvietots ar `LOCALTIMESTAMP`.
+                   Oracle tekošā laika operators `SYSDATE` tiek aizvietots ar `LOCALTIMESTAMP`.
 
 ---
 
@@ -61,6 +70,7 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
 
 ---
 
+
 ## 🧩 Procedūru izmaiņas migrācijas laikā
 
 ### 🔁 IN/OUT
@@ -75,7 +85,7 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
 
 ---
 
- ### 🔍 SELECT INTO -> NOT EXISTS 
+### 🔍 SELECT INTO -> NOT EXISTS 
  - **Oracle**: 
 
  ```
@@ -108,3 +118,28 @@ END IF;
 
 **Paskaidrojums:** Oracle kļūdu kodi (-20001 utt.) tiek aizstāti ar PostgreSQL lietotāja kļūdu kodiem (P0001–P9999).
                    PostgreSQL gadījumā kļūdas kods jānorāda skaidri ar USING ERRCODE.
+
+---
+
+### 🧠 Dinamiskie SQL
+ - **Oracle**: `v_sql := 'UPDATE products SET price = :1 WHERE product_id = :2';`
+ - **PostgreSQL**: `UPDATE products SET price = $1 WHERE product_id = $2`
+
+**Paskaidrojums:** PostgreSQL lai apzīmētu parametrus, divpunktu vietā izmanto dolārzīmes.
+
+---
+
+### 🚀 Dinamiskie SQL palaišana
+ - **Oracle**: `EXECUTE IMMEDIATE v_sql USING p_new_price, p_product_id;`
+ - **PostgreSQL**: `EXECUTE v_sql USING p_new_price, p_product_id;`
+
+**Paskaidrojums:** PostgreSQL neizmanto IMMEDIATE, vienkārši EXECUTE.
+
+---
+
+### 🔢 Rindu skaita iegūšana
+ - **Oracle**: `SQL%ROWCOUNT`
+ - **PostgreSQL**: `GET DIAGNOSTICS v_count = ROW_COUNT;`
+
+**Paskaidrojums:** PostgreSQL ir komanda `GET DIAGNOSTICS` kura ļauj dabūt skarto rindu skaitu ar DML operācijām. 
+                   GET DIAGNOSTICS — universāls mehānisms, kurš ļauj dabūt vairāk informācijas, nekā vienkārši rindu skaitu.

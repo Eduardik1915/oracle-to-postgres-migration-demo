@@ -14,5 +14,4 @@ INSERT INTO orders (customer_id, product_id, quantity, order_date) VALUES (1, 2,
 INSERT INTO orders (customer_id, product_id, quantity, order_date) VALUES (2, 3, 2, LOCALTIMESTAMP);
 INSERT INTO orders (customer_id, product_id, quantity, order_date) VALUES (3, 5, 1, LOCALTIMESTAMP);
 INSERT INTO orders (customer_id, product_id, quantity, order_date) VALUES (4, 1, 1, LOCALTIMESTAMP);
-INSERT INTO orders (customer_id, product_id, quantity, order_date) VALUES (5, 4, 1, LOCALTIMESTAMP);
 INSERT INTO orders (customer_id, product_id, quantity, order_date) VALUES (1, 3, 1, LOCALTIMESTAMP);

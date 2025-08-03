@@ -5,17 +5,18 @@
 Šis ir pet-projekts, kura mērķis ir demonstrēt datu bāzes migrāciju no Oracle uz PostgreSQL.  
 Projekts ietver:
 Trīs savstarpēji saistītas tabulas: `customers`, `products` un `orders`.
-Divas procedūras: `get_customer_orders` un `update_product_price_dynamic`.  
+Divas procedūras: `get_customer_orders` un `update_product_price_dynamic`.
+Vienu funkciju: `get_customer_order_summary`.
 Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu bāzu pārvaldības sistēmām.
 
 ---
 
 ## Saturs / Contents
 
-- 🔗 Atsauces uz skriptiem
 - 📁 Failsistēma
+- 🔗 Atsauces uz skriptiem
 - 📊 Tabulu izmaiņas
-- 🧩 Procedūru izmaiņas
+- 🧩 Procedūru un funkciju izmaiņas
 
 ---
 
@@ -31,9 +32,9 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
 | Funkcionalitāte                        | Oracle fails                                                   | PostgreSQL fails                                                  |
 |----------------------------------------|-----------------------------------------------------------------|-------------------------------------------------------------------|
 | 📦 Datu tabulas                        | [`oracle/schema.sql`](oracle/schema.sql)                       | [`postgresql/schema.sql`](postgresql/schema.sql)                  |
-| 📄 Procedūra: `get_customer_orders`    | [`oracle/get_customer_orders.sql`](oracle/get_customer_orders.sql) | [`postgresql/get_customer_orders.sql`](postgresql/get_customer_orders.sql) |
-| 📄 Procedūra: `update_product_price_dynamic` | [`oracle/update_product_price_dynamic.sql`](oracle/update_product_price_dynamic.sql) | [`postgresql/update_product_price_dynamic.sql`](postgresql/update_product_price_dynamic.sql) |
-| 📄 Funkcija: `get_customer_order_summary` | [`oracle/function_get_customer_order_summary.sql`](oracle/function_get_customer_order_summary.sql) | [`postgresql/function_get_customer_order_summary.sql`](postgresql/function_get_customer_order_summary.sql) |
+| 📄 Procedūra: `get_customer_orders`    | [`oracle/get_customer_orders.sql`](oracle/procedura_get_customer_orders.sql) | [`postgresql/get_customer_orders.sql`](postgresql/procedura_get_customer_orders.sql) |
+| 📄 Procedūra: `update_product_price_dynamic` | [`oracle/update_product_price_dynamic.sql`](oracle/procedura_update_product_price_dynamic.sql) | [`postgresql/update_product_price_dynamic.sql`](postgresql/procedura_update_product_price_dynamic.sql) |
+| 📄 Funkcija: `get_customer_order_summary` | [`oracle/get_customer_order_summary.sql`](oracle/function_get_customer_order_summary.sql) | [`postgresql/get_customer_order_summary.sql`](postgresql/function_get_customer_order_summary.sql) |
 | 🧪 Testēšanas skripti                  | [`oracle/test_cases.sql`](oracle/test_cases.sql)                                            | [`postgresql/test_cases.sql`](postgresql/test_cases.sql)         |
 
 ---
@@ -96,8 +97,8 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
 ## 🧩 Procedūru un funkciju izmaiņas migrācijas laikā
 
 ### 🔁 IN/OUT
- - **Oracle**: `Norāda pēc parametra`
- - **PostgreSQL**: `Norāda pirms parametra`
+ - **Oracle**: `Norāda pēc parametra nosaukuma`
+ - **PostgreSQL**: `Norāda pirms parametra nosaukuma`
 
 ---
 
@@ -153,13 +154,13 @@ END IF;
  - **Oracle**: `RAISE_APPLICATION_ERROR(-20001, 'Customer not found');`
  - **PostgreSQL**: `RAISE EXCEPTION 'Customer not found' USING ERRCODE = 'P0001';`
 
-**Paskaidrojums:** Oracle kļūdu kodi (-20001 utt.) tiek aizstāti ar PostgreSQL lietotāja kļūdu kodiem (P0001–P9999).
+**Paskaidrojums:** Oracle kļūdu kodi (-20001 utt.) tiek aizstāti ar PostgreSQL lietotāja kļūdu kodiem (P1000–P9999).
                    PostgreSQL gadījumā kļūdas kods jānorāda skaidri ar USING ERRCODE.
 
 ---
 
 ### 🧠 Dinamiskie SQL
- - **Oracle**: `v_sql := 'UPDATE products SET price = :1 WHERE product_id = :2';`
+ - **Oracle**: `UPDATE products SET price = :1 WHERE product_id = :2';`
  - **PostgreSQL**: `UPDATE products SET price = $1 WHERE product_id = $2`
 
 **Paskaidrojums:** PostgreSQL lai apzīmētu parametrus, divpunktu vietā izmanto dolārzīmes.

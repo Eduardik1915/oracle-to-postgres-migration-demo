@@ -1,10 +1,12 @@
+--Visi testi veikti izmantojot datus no PostgreSQL/data.sql skripta
+
 -- ============================================
 -- Testi get_customer_orders procedūrai
 -- =====================================
--- Nomainot procedūras pirmā parametra vertības būs dažādas uzvedības.
--- 1. Vērtība: 1 -> Sekmīgi atgriež vērtības
--- 2. Vērtība: 5 -> Atgriež kļūdu 'No orders found for this customer'
--- 3. Vērtība: 6 -> Atgriež kļūdu 'Customer not found'
+-- Nomainot procedūras pirmā parametra vertības būs dažādas uzvedības:
+-- 1 -> Sekmīgi atgriež vērtības
+-- 5 -> Atgriež kļūdu 'No orders found for this customer'
+-- 99 -> Atgriež kļūdu 'Customer not found'
 DO $$
 DECLARE
 	ref REFCURSOR;
@@ -13,7 +15,7 @@ DECLARE
    order_date orders.order_date%TYPE;
 BEGIN
     -- Nomaini vērtību šeit, lai pārbaudītu dažādus scenārijus
-	call get_customer_orders(1, ref);
+	call get_customer_orders(?, ref);
 
 	LOOP
 		FETCH ref INTO product_name, quantity, order_date;
@@ -31,18 +33,47 @@ $$;
 -- Procedure: update_product_price_dynamic
 -- Apraksts: atjauno produkta cenu caur dinamisko SQL
 -- ============================================
--- Testi ar pirmo procedūras parametru.
--- 1. Vērtība: 1 -> Sekmīgi nomaina cenu
--- 2. Vērtība: 6 -> Atgriež kļūdu 'No product updated. Possibly invalid ID'
--- Testi ar otro procedūras parametru.
--- 1. Vērtība: pozitīva -> Sekmīgi nomaina cenu
--- 2. Vērtība: negatīva -> Atgriež kļūdu 'Price must be positive'
+-- Testi ar pirmo procedūras parametru:
+--   1 -> Sekmīgi nomaina cenu
+--   99 -> Atgriež kļūdu 'No product updated. Possibly invalid ID'
+-- Testi ar otro procedūras parametru:
+--   Pozitīva -> Sekmīgi nomaina cenu
+--   Negatīva -> Atgriež kļūdu 'Price must be positive'
 DO $$
 BEGIN
     -- Nomaini vērtību šeit, lai pārbaudītu dažādus scenārijus
-    CALL update_product_price_dynamic(1, 100);
+    CALL update_product_price_dynamic(?, ?);
 EXCEPTION
     WHEN OTHERS THEN
         RAISE NOTICE 'Test Failed: %', SQLERRM;
 END;
 $$;
+
+
+-- ============================================
+-- Procedure: update_product_price_dynamic
+-- Apraksts: atjauno produkta cenu caur dinamisko SQL
+-- ============================================
+-- Testi ar pirmo procedūras parametru:
+--   1 -> Sekmīgi nomaina cenu
+--   99 -> Atgriež kļūdu 'No product updated. Possibly invalid ID'
+-- Testi ar otro procedūras parametru:
+--   Pozitīva -> Sekmīgi nomaina cenu
+--   Negatīva -> Atgriež kļūdu 'Price must be positive'
+DO $$
+BEGIN
+    -- Nomaini vērtību šeit, lai pārbaudītu dažādus scenārijus
+    CALL update_product_price_dynamic(?, ?);
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE NOTICE 'Test Failed: %', SQLERRM;
+END;
+$$;
+
+-- ============================================
+-- Function: get_customer_order_summary
+-- Apraksts: atgriež klienta pasūtījumus
+-- =====================================
+--  1 -> atgriež pirkumu sarakstu
+-- 99 -> Atgriež paziņojumu 'No orders found'
+SELECT get_customer_order_summary(?) FROM dual;

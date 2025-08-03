@@ -10,6 +10,15 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
 
 ---
 
+## Saturs / Contents
+
+- 🔗 Atsauces uz skriptiem
+- 📁 Failsistēma
+- 📊 Tabulu izmaiņas
+- 🧩 Procedūru izmaiņas
+
+---
+
 ### 📁 Failsistēma
 - `oracle/` — sākotnējie Oracle SQL skripti
 - `postgresql/` — migrētie PostgreSQL skripti
@@ -24,6 +33,7 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
 | 📦 Datu tabulas                        | [`oracle/schema.sql`](oracle/schema.sql)                       | [`postgresql/schema.sql`](postgresql/schema.sql)                  |
 | 📄 Procedūra: `get_customer_orders`    | [`oracle/get_customer_orders.sql`](oracle/get_customer_orders.sql) | [`postgresql/get_customer_orders.sql`](postgresql/get_customer_orders.sql) |
 | 📄 Procedūra: `update_product_price_dynamic` | [`oracle/update_product_price_dynamic.sql`](oracle/update_product_price_dynamic.sql) | [`postgresql/update_product_price_dynamic.sql`](postgresql/update_product_price_dynamic.sql) |
+| 📄 Funkcija: `get_customer_order_summary` | [`oracle/function_get_customer_order_summary.sql`](oracle/function_get_customer_order_summary.sql) | [`postgresql/function_get_customer_order_summary.sql`](postgresql/function_get_customer_order_summary.sql) |
 | 🧪 Testēšanas skripti                  | [`oracle/test_cases.sql`](oracle/test_cases.sql)                                            | [`postgresql/test_cases.sql`](postgresql/test_cases.sql)         |
 
 ---
@@ -83,11 +93,26 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
 ---
 
 
-## 🧩 Procedūru izmaiņas migrācijas laikā
+## 🧩 Procedūru un funkciju izmaiņas migrācijas laikā
 
 ### 🔁 IN/OUT
  - **Oracle**: `Norāda pēc parametra`
  - **PostgreSQL**: `Norāda pirms parametra`
+
+---
+
+### Atgriešanas operators
+ - **Oracle**: `RETURN`
+ - **PostgreSQL**: `RETURNS`
+
+---
+
+### Teksta pārbaude uz NULL
+ - **Oracle**: `IF v_summary IS NULL THEN`
+ - **PostgreSQL**: `IF v_summary = '' THEN`
+
+**Paskaidrojums:** Oracle gadījumā tukša virkne ('') tiek interpretēta kā NULL, tāpēc pietiek pārbaudīt ar IS NULL.
+                   Savukārt PostgreSQL tukša virkne nav NULL, tā ir atsevišķa vērtība (''), tāpēc pārbaude jāveic tieši ar = ''.
 
 ---
 

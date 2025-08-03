@@ -32,8 +32,8 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
 | Funkcionalitāte                        | Oracle fails                                                   | PostgreSQL fails                                                  |
 |----------------------------------------|-----------------------------------------------------------------|-------------------------------------------------------------------|
 | 📦 Datu tabulas                        | [`oracle/schema.sql`](oracle/schema.sql)                       | [`postgresql/schema.sql`](postgresql/schema.sql)                  |
-| 📄 Procedūra: `get_customer_orders`    | [`oracle/get_customer_orders.sql`](oracle/procedura_get_customer_orders.sql) | [`postgresql/get_customer_orders.sql`](postgresql/procedura_get_customer_orders.sql) |
-| 📄 Procedūra: `update_product_price_dynamic` | [`oracle/update_product_price_dynamic.sql`](oracle/procedura_update_product_price_dynamic.sql) | [`postgresql/update_product_price_dynamic.sql`](postgresql/procedura_update_product_price_dynamic.sql) |
+| 📄 Procedūra: `get_customer_orders`    | [`oracle/get_customer_orders.sql`](oracle/procedure_get_customer_orders.sql) | [`postgresql/get_customer_orders.sql`](postgresql/procedure_get_customer_orders.sql) |
+| 📄 Procedūra: `update_product_price_dynamic` | [`oracle/update_product_price_dynamic.sql`](oracle/procedure_update_product_price_dynamic.sql) | [`postgresql/update_product_price_dynamic.sql`](postgresql/procedure_update_product_price_dynamic.sql) |
 | 📄 Funkcija: `get_customer_order_summary` | [`oracle/get_customer_order_summary.sql`](oracle/function_get_customer_order_summary.sql) | [`postgresql/get_customer_order_summary.sql`](postgresql/function_get_customer_order_summary.sql) |
 | 🧪 Testēšanas skripti                  | [`oracle/test_cases.sql`](oracle/test_cases.sql)                                            | [`postgresql/test_cases.sql`](postgresql/test_cases.sql)         |
 
@@ -65,7 +65,7 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
  - **Oracle**: `email VARCHAR2(100) UNIQUE`
  - **PostgreSQL**: `CONSTRAINT uniq_customer_email UNIQUE(email)`
  
-**Paskaidrojums:** PostgreSQL atbalsta tieši tādu pašu semantiku, kā Oracle, bet tika nolemts UNIQUE CONSTRAINT izveidot atsevišķi,
+**Paskaidrojums:** PostgreSQL atbalsta tieši tādu pašu semantiku, kā Oracle, bet tika nolemts `UNIQUE CONSTRAINT` izveidot atsevišķi,
                    jo tas dod lasāmu un saprotamu vārdu, kas turpmāk palīdzēs ērtāk ar to strādāt.
 
 ---
@@ -117,6 +117,15 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
 
 ---
 
+### Pāreja uz jaunu rindu
+ - **Oracle**: `CHR(10)`
+ - **PostgreSQL**: `E'\n'`
+
+**Paskaidrojums:** Abas datu bāzes atbalsta ASCII koda izmantošanu (CHR(10) — jaunas rindas simbols).
+                   Taču PostgreSQL papildus piedāvā E'' sintaksi, kur \n ir speciāla “escape” secība, kas apzīmē jaunu rindu.
+
+---
+
 ### 🎯 Kursora tips 
  - **Oracle**: `SYS_REFCURSOR`
  - **PostgreSQL**: `REFCURSOR`
@@ -146,7 +155,7 @@ IF NOT EXISTS(
 END IF;
 ```
 
-**Paskaidrojums:** PostgreSQL atbalsta NOT EXISTS/EXISTS izmantošanu tieši IF kontekstā, kas padara kodu īsāku un saprotamāku. Oracle šādu iespēju nav.
+**Paskaidrojums:** PostgreSQL atbalsta `NOT EXISTS/EXISTS` izmantošanu tieši IF kontekstā, kas padara kodu īsāku un saprotamāku. Oracle šādu iespēju nav.
 
 ---
 
@@ -155,7 +164,7 @@ END IF;
  - **PostgreSQL**: `RAISE EXCEPTION 'Customer not found' USING ERRCODE = 'P0001';`
 
 **Paskaidrojums:** Oracle kļūdu kodi (-20001 utt.) tiek aizstāti ar PostgreSQL lietotāja kļūdu kodiem (P1000–P9999).
-                   PostgreSQL gadījumā kļūdas kods jānorāda skaidri ar USING ERRCODE.
+                   PostgreSQL gadījumā kļūdas kods jānorāda skaidri ar `USING ERRCODE`.
 
 ---
 
@@ -171,7 +180,7 @@ END IF;
  - **Oracle**: `EXECUTE IMMEDIATE v_sql USING p_new_price, p_product_id;`
  - **PostgreSQL**: `EXECUTE v_sql USING p_new_price, p_product_id;`
 
-**Paskaidrojums:** PostgreSQL neizmanto IMMEDIATE, vienkārši EXECUTE.
+**Paskaidrojums:** PostgreSQL neizmanto `IMMEDIATE`, vienkārši EXECUTE.
 
 ---
 
@@ -180,4 +189,4 @@ END IF;
  - **PostgreSQL**: `GET DIAGNOSTICS v_count = ROW_COUNT;`
 
 **Paskaidrojums:** PostgreSQL ir komanda `GET DIAGNOSTICS` kura ļauj dabūt skarto rindu skaitu ar DML operācijām. 
-                   GET DIAGNOSTICS — universāls mehānisms, kurš ļauj dabūt vairāk informācijas, nekā vienkārši rindu skaitu.
+                   `GET DIAGNOSTICS` — universāls mehānisms, kurš ļauj dabūt vairāk informācijas, nekā vienkārši rindu skaitu.

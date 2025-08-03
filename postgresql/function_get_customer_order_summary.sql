@@ -18,8 +18,8 @@ DECLARE
 BEGIN
 	FOR r IN c_orders LOOP
         v_summary := v_summary || 'Order #' || r.order_id || 
-                     ': ' || r.product_name || 
-                      ' ($' || TO_CHAR(r.price, '9990.00') || ')' || CHR(10);
+                     E': ' || r.product_name || 
+                      ' ($' || TO_CHAR(r.price, '9990.00') || ')' || E'\n';
     END LOOP;
 
 	IF v_summary = '' THEN

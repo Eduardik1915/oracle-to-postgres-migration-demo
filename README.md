@@ -1,4 +1,4 @@
-# Projekts: Migrācija no Oracle uz PostgreSQL
+# Oracle → PostgreSQL Migrācijas projekts
 
 ## Projekta apraksts
 
@@ -31,15 +31,15 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
 
 | Funkcionalitāte                        | Oracle fails                                                   | PostgreSQL fails                                                  |
 |----------------------------------------|-----------------------------------------------------------------|-------------------------------------------------------------------|
-| 📦 Datu tabulas                        | [`oracle/schema.sql`](oracle/schema.sql)                       | [`postgresql/schema.sql`](postgresql/schema.sql)                  |
-| 📄 Procedūra: `get_customer_orders`    | [`oracle/get_customer_orders.sql`](oracle/procedure_get_customer_orders.sql) | [`postgresql/get_customer_orders.sql`](postgresql/procedure_get_customer_orders.sql) |
-| 📄 Procedūra: `update_product_price_dynamic` | [`oracle/update_product_price_dynamic.sql`](oracle/procedure_update_product_price_dynamic.sql) | [`postgresql/update_product_price_dynamic.sql`](postgresql/procedure_update_product_price_dynamic.sql) |
-| 📄 Funkcija: `get_customer_order_summary` | [`oracle/get_customer_order_summary.sql`](oracle/function_get_customer_order_summary.sql) | [`postgresql/get_customer_order_summary.sql`](postgresql/function_get_customer_order_summary.sql) |
-| 🧪 Testēšanas skripti                  | [`oracle/test_cases.sql`](oracle/test_cases.sql)                                            | [`postgresql/test_cases.sql`](postgresql/test_cases.sql)         |
+| 📦 Datu tabulas                        | [`oracle/schema`](oracle/schema.sql)                       | [`postgresql/schema.sql`](postgresql/schema.sql)                  |
+| 📄 Procedūra: `get_customer_orders`    | [`oracle/procedure_get_customer_orders`](oracle/procedure_get_customer_orders.sql) | [`postgresql/procedure_get_customer_orders`](postgresql/procedure_get_customer_orders.sql) |
+| 📄 Procedūra: `update_product_price_dynamic` | [`oracle/procedure_update_product_price_dynamic`](oracle/procedure_update_product_price_dynamic.sql) | [`postgresql/procedure_update_product_price_dynamic`](postgresql/procedure_update_product_price_dynamic.sql) |
+| 📄 Funkcija: `get_customer_order_summary` | [`oracle/function_get_customer_order_summary`](oracle/function_get_customer_order_summary.sql) | [`postgresql/function_get_customer_order_summary`](postgresql/function_get_customer_order_summary.sql) |
+| 🧪 Testēšanas skripti                  | [`oracle/test_cases`](oracle/test_cases.sql)                                            | [`postgresql/test_cases`](postgresql/test_cases.sql)         |
 
 ---
 
-## 📊 Tabulu izmaiņas migrācijas laikā
+## 📊 Tabulu migrācijas izmaiņas
 
 
 ###  🆔 ID lauka tips
@@ -94,7 +94,7 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
 ---
 
 
-## 🧩 Procedūru un funkciju izmaiņas migrācijas laikā
+## 🧩 Procedurālās loģikas migrācija
 
 ### 🔁 IN/OUT
  - **Oracle**: `Norāda pēc parametra nosaukuma`

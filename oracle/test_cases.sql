@@ -54,3 +54,17 @@ END;
 --  1 -> atgriež pirkumu sarakstu
 -- 99 -> Atgriež paziņojumu 'No orders found'
 SELECT get_customer_order_summary(?) FROM dual;
+
+
+-- ============================================
+-- Trigger: trg_orders_quantity_update
+-- Apraksts: saglabā kolonnas orders.quantity izmaiņas old_quantity_log tabulā
+-- =====================================
+INSERT INTO orders (order_id, customer_id, product_id, quantity)
+VALUES (200, 1, 2, 3);
+
+UPDATE orders
+SET quantity = 5
+WHERE order_id = 200;
+
+SELECT * FROM old_quantity_log;

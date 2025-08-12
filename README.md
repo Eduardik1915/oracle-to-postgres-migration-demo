@@ -2,11 +2,12 @@
 
 ## Projekta apraksts
 
-Šis ir pet-projekts, kura mērķis ir demonstrēt datu bāzes migrāciju no Oracle uz PostgreSQL.  
-Projekts ietver:
-Trīs savstarpēji saistītas tabulas: `customers`, `products` un `orders`.
-Divas procedūras: `get_customer_orders` un `update_product_price_dynamic`.
-Vienu funkciju: `get_customer_order_summary`.
+Šis ir pet-projekts, kura mērķis ir demonstrēt datu bāzes migrāciju no Oracle uz PostgreSQL.<br>
+Projekts ietver:<br>
+Četras tabulas: `customers`, `products`, `orders` un `old_quantity_log`.<br>
+Divas procedūras: `get_customer_orders` un `update_product_price_dynamic`.<br>
+Vienu funkciju: `get_customer_order_summary`.<br>
+Vienu trigeru: `trg_orders_quantity_update`.<br>
 Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu bāzu pārvaldības sistēmām.
 
 ---
@@ -17,6 +18,7 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
 - 🔗 Atsauces uz skriptiem
 - 📊 Tabulu migrācijas izmaiņas
 - 🧩 Procedurālās loģikas migrācija
+- 🛠️ Trigeru loģikas migrācija
 
 ---
 
@@ -35,6 +37,7 @@ Fokusā ir atšķirības sintaksē, datu tipos un uzvedībā starp abām datu b�
 | 📄 Procedūra: `get_customer_orders`    | [`oracle/procedure_get_customer_orders`](oracle/procedure_get_customer_orders.sql) | [`postgresql/procedure_get_customer_orders`](postgresql/procedure_get_customer_orders.sql) |
 | 📄 Procedūra: `update_product_price_dynamic` | [`oracle/procedure_update_product_price_dynamic`](oracle/procedure_update_product_price_dynamic.sql) | [`postgresql/procedure_update_product_price_dynamic`](postgresql/procedure_update_product_price_dynamic.sql) |
 | 📄 Funkcija: `get_customer_order_summary` | [`oracle/function_get_customer_order_summary`](oracle/function_get_customer_order_summary.sql) | [`postgresql/function_get_customer_order_summary`](postgresql/function_get_customer_order_summary.sql) |
+| 📄 Trigeris: `trg_orders_quantity_update` | [`oracle/trigger_trg_orders_quantity_update`](oracle/trigger_trg_orders_quantity_update.sql) | [`postgresql/trigger_trg_orders_quantity_update`](postgresql/trigger_trg_orders_quantity_update.sql) |
 | 🧪 Testēšanas skripti                  | [`oracle/test_cases`](oracle/test_cases.sql)                                            | [`postgresql/test_cases`](postgresql/test_cases.sql)         |
 
 ---
@@ -200,3 +203,25 @@ END IF;
 
 **Paskaidrojums:** PostgreSQL ir komanda `GET DIAGNOSTICS` kura ļauj dabūt skarto rindu skaitu ar DML operācijām. 
                    `GET DIAGNOSTICS` — universāls mehānisms, kurš ļauj dabūt vairāk informācijas, nekā vienkārši rindu skaitu.
+
+---
+
+## 🛠️ Trigeru loģikas migrācija
+
+### 📜 Sintakse
+ - **Oracle**: `Trigera loģika ir tieši trigera iekšienē (CREATE OR REPLACE TRIGGER ... BEGIN ... END;).`
+ - **PostgreSQL**: `Trigera loģika tiek realizēta atsevišķā funkcijā, un trigeris tikai norāda kādu funkciju izsaukt.`
+
+---
+
+### 🔄 NEW/OLD
+ - **Oracle**: `:NEW.column_name, :OLD.column_name — pseidoieraksti, pieejami trigera ķermenī.`
+ - **PostgreSQL**: `NEW.column_name, OLD.column_name — record tipa mainīgie trigera funkcijā.`
+
+**Paskaidrojums:** PostgreSQL nav jālieto divpunkts pirms `NEW/OLD`.
+
+---
+
+### 🎯 Atgriežamā vērtība
+ - **Oracle**: `Vērtību neatgriež, trigera loģika tiek izpildīta automātiski.`
+ - **PostgreSQL**: `Row-level trigera funkcijai obligāti jāatgriež NEW, lai piemērotu izmaiņas. Statement-level trigeri RETURN neizmanto.`
